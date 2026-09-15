@@ -231,7 +231,6 @@
           </div>
         </div>
       </div>
-                 // ...existing code...
         {% if session.get('username') %}
           <div class="explore-cta">
             <a href="products.html" class="explore-btn">
@@ -245,7 +244,7 @@
           .explore-cta {
             position: fixed;
             top: 150px;
-            left: 350px;
+            left: 400px;
             z-index: 1000;
           }
         
@@ -256,8 +255,8 @@
             border-radius: 18px;
             text-decoration: none;
             color: #ffffff;
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 15px;
+            font-weight: 600;
             letter-spacing: 0.5px;
             background: linear-gradient(135deg, #ff9a00, #ff4d8d 45%, #7c3aed);
             border: 1px solid rgba(255,255,255,0.22);
@@ -305,7 +304,7 @@
             }
           }
         </style>
-        // ...existing code...
+        
       <div class="gif">
         <img src="{{ url_for('static', filename='rename.gif') }}" alt="gif" />
       </div>
