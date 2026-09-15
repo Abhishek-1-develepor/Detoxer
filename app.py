@@ -1,8 +1,3 @@
-"""
-app.py — Flask backend for Detoxer.
-
-Clean version — no seed data. Users register themselves, admins add products.
-"""
 
 import os
 import sqlite3
@@ -13,19 +8,24 @@ from flask import (
     session, redirect, url_for
 )
 
+# ============================================================
+# NLTK DATA — download at startup if missing
+# ============================================================
 import nltk
 
-NLTK_DATA_DIR = os.path.join(os.path.dirname(__file__), "nltk_data")
+NLTK_DATA_DIR = os.environ.get(
+    "NLTK_DATA",
+    os.path.join(os.path.dirname(__file__), "nltk_data")
+)
 os.makedirs(NLTK_DATA_DIR, exist_ok=True)
 
 if NLTK_DATA_DIR not in nltk.data.path:
     nltk.data.path.insert(0, NLTK_DATA_DIR)
 
 for pkg in ["punkt", "punkt_tab", "stopwords"]:
+    subdir = "tokenizers" if pkg.startswith("punkt") else "corpora"
     try:
-        nltk.data.find(
-            f"tokenizers/{pkg}" if pkg.startswith("punkt") else f"corpora/{pkg}"
-        )
+        nltk.data.find(f"{subdir}/{pkg}")
     except LookupError:
         try:
             nltk.download(pkg, download_dir=NLTK_DATA_DIR, quiet=True)
@@ -79,7 +79,7 @@ def verify_password(password: str, stored_hash: str) -> bool:
 
 
 # ============================================================
-# SCHEMA (only create if missing — no seed data)
+# SCHEMA — creates tables if missing (no seed data)
 # ============================================================
 def init_db():
     conn = get_db_connection()
@@ -128,6 +128,13 @@ def init_db():
 
     conn.commit()
     conn.close()
+    print(f"[DB] Initialized at {DB_NAME}")
+
+
+# ============================================================
+# ⚡ STARTUP CALL — runs at import (works with gunicorn too)
+# ============================================================
+init_db()
 
 
 def _table_exists(conn, name: str) -> bool:
@@ -580,11 +587,9 @@ def api_delete_product(pid):
 
 
 # ============================================================
-# START
+# START (local dev only — gunicorn ignores this block)
 # ============================================================
 if __name__ == "__main__":
-    init_db()   # only creates tables, no seeding
-
     print("\n=== REGISTERED ROUTES ===")
     for rule in sorted(app.url_map.iter_rules(), key=lambda r: str(r)):
         print(f"  {str(rule):<45} → {rule.endpoint}")
