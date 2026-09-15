@@ -12,8 +12,34 @@ from flask import (
     Flask, render_template, request, jsonify,
     session, redirect, url_for
 )
+ ============================================================
+# NLTK DATA — must run BEFORE importing ml module
+# ============================================================
+import nltk
 
-from ml.report import build_review_report   # ML analysis import
+NLTK_DATA_DIR = os.path.join(os.path.dirname(__file__), "nltk_data")
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.insert(0, NLTK_DATA_DIR)
+
+for pkg in ["punkt", "punkt_tab", "stopwords"]:
+    try:
+        nltk.data.find(
+            f"tokenizers/{pkg}" if pkg.startswith("punkt") else f"corpora/{pkg}"
+        )
+    except LookupError:
+        try:
+            nltk.download(pkg, download_dir=NLTK_DATA_DIR, quiet=True)
+            print(f"[NLTK] Downloaded {pkg}")
+        except Exception as e:
+            print(f"[NLTK] Failed to download {pkg}: {e}")
+
+# ============================================================
+# ML IMPORT — after NLTK is ready
+# ============================================================
+from ml.report import build_review_report
+
 
 # ============================================================
 # APP SETUP

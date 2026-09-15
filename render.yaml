@@ -3,13 +3,23 @@ services:
     name: detoxer
     env: python
     plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+
     buildCommand: |
-      pip install --upgrade pip
+      pip install --upgrade pip setuptools wheel
       pip install -r requirements.txt
-      python -m nltk.downloader punkt punkt_tab stopwords
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120
+      python -m nltk.downloader -d /opt/render/project/src/nltk_data punkt punkt_tab stopwords
+
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120 --workers 2
+
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.10
       - key: FLASK_ENV
         value: production
+      - key: NLTK_DATA
+        value: /opt/render/project/src/nltk_data
+      - key: PYTHONUNBUFFERED
+        value: "true"
