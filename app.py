@@ -12,9 +12,7 @@ from flask import (
     Flask, render_template, request, jsonify,
     session, redirect, url_for
 )
- ============================================================
-# NLTK DATA — must run BEFORE importing ml module
-# ============================================================
+
 import nltk
 
 NLTK_DATA_DIR = os.path.join(os.path.dirname(__file__), "nltk_data")
