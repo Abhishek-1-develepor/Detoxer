@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS Project</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #0d0d0e;
+        color: #e5e7eb;
+      }
+
+      body[data-role="admin"] {
+        background: linear-gradient(180deg, #0c0c0c 0%, #070707 100%);
+      }
+
+      body[data-role="user"] {
+        background: linear-gradient(180deg, #140d1d 0%, #0b1020 100%);
+      }
+
+      .mode-badge {
+        position: fixed;
+        top: 18px;
+        right: 20px;
+        z-index: 1000;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        background: rgba(10, 10, 10, 0.12);
+        border: 1px solid rgba(5, 5, 5, 0.22);
+        color: #dbeafe;
+      }
+
+      body[data-role="admin"] .mode-badge {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(74, 222, 128, 0.35);
+        color: #dcfce7;
+      }
+
+      body[data-role="user"] .mode-badge {
+        background: rgba(168, 85, 247, 0.1);
+        border-color: rgba(196, 181, 253, 0.35);
+        color: #f3e8ff;
+      }
+
+      .intro img, .gif img { display: block; width: 100%; }
+      .main_box { position: relative; z-index: 1; }
+      .sidebar_menu {
+        background: rgba(8, 8, 8, 0.85);
+        backdrop-filter: blur(8px);
+        border-right: 1px solid rgba(148, 163, 184, 0.12);
+      }
+      .logo a { color: #ffffff; text-decoration: none; }
+
+      body[data-role="admin"] .logo a { color: #86efac; }
+      body[data-role="user"] .logo a { color: #d8b4fe; }
+
+      .menu ul { list-style: none; padding: 0; margin: 0; }
+      .menu li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        transition: 0.25s ease;
+      }
+      .menu li:hover { background: rgba(10, 10, 10, 0.12); }
+      .menu a { text-decoration: none; color: #e2e8f0; }
+      .menu i { color: #93c5fd; }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 8, 8, 0.72);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+      }
+      .modal.show { display: flex; }
+
+      .modal-content {
+        position: relative;
+        width: min(430px, 100%);
+        background: linear-gradient(145deg, rgba(8, 8, 8, 0.96), rgba(15, 23, 42, 0.9));
+        border: 1px solid rgba(12, 12, 12, 0.2);
+        border-radius: 22px;
+        padding: 30px 26px 24px;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        border: none;
+        background: rgba(0, 0, 0, 0.12);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        cursor: pointer;
+        color: #f3f4f5;
+      }
+
+      .brand { text-align: center; margin-bottom: 18px; }
+      .brand .logo-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        font-size: 24px;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+      }
+
+      .modal-content h2 {
+        text-align: center;
+        margin: 10px 0 8px;
+        color: #f8fafc;
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 22px;
+      }
+
+      .field { margin-bottom: 18px; }
+      .field label {
+        display: block;
+        margin-bottom: 8px;
+        color: #dbeafe;
+        font-weight: 600;
+        font-size: 0.92rem;
+      }
+      .field input, .field select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 14px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        border-radius: 12px;
+        outline: none;
+        font-size: 15px;
+        background: rgba(10, 10, 10, 0.8);
+        color: #f8fafc;
+      }
+
+      .field input::placeholder { color: #64748b; }
+
+      .login-btn, .register-btn {
+        width: 100%;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      .register-btn.secondary {
+        background: linear-gradient(135deg, #10b981, #14b8a6);
+      }
+
+      .register-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .register-row .register-btn {
+        flex: 1;
+      }
+
+      #loginMessage {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 14px;
+        min-height: 22px;
+        font-weight: 500;
+      }
+
+      .success { color: #4ade80; }
+      .error { color: #f87171; }
+    </style>
+  </head>
+
+  <body data-role="guest">
+    <div class="mode-badge" id="modeBadge">Mode: Guest</div>
+
+    <div class="more">
+      <div class="intro">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="logo" />
+      </div>
+
+      <div class="main_box">
+        <div class="sidebar_menu">
+          <div class="logo">
+            <a href="#">Detoxer</a>
+          </div>
+
+          <div class="menu">
+            <ul id="navMenu">
+              <li><i class="fa-solid fa-image"></i><a href="#">Products</a></li>
+              <li><i class="fa-solid fa-arrow-up-right-from-square"></i><a href="#">Shortcuts</a></li>
+              <li><i class="fa-solid fa-photo-film"></i><a href="#">Exhibits</a></li>
+              <li><i class="fa-solid fa-calendar-days"></i><a href="#">Events</a></li>
+              <li><i class="fa-solid fa-store"></i><a href="#">Store</a></li>
+              <li><i class="fa-solid fa-phone"></i><a href="#">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+                 // ...existing code...
+        {% if session.get('username') %}
+          <div class="explore-cta">
+            <a href="products.html" class="explore-btn">
+              <span class="shine"></span>
+              Explore New Products
+            </a>
+          </div>
+        {% endif %}
+        
+        <style>
+          .explore-cta {
+            position: fixed;
+            top: 150px;
+            left: 350px;
+            z-index: 1000;
+          }
+        
+          .explore-btn {
+            position: relative;
+            display: inline-block;
+            padding: 18px 32px;
+            border-radius: 18px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ff9a00, #ff4d8d 45%, #7c3aed);
+            border: 1px solid rgba(255,255,255,0.22);
+            box-shadow: 0 14px 30px rgba(255, 110, 80, 0.45);
+            overflow: hidden;
+            animation: pulse 1.8s infinite ease-in-out;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+          }
+        
+          .explore-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 18px 38px rgba(124, 58, 237, 0.52);
+          }
+        
+          .explore-btn .shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+              120deg,
+              transparent 20%,
+              rgba(255,255,255,0.8) 50%,
+              transparent 80%
+            );
+            transform: translateX(-140%);
+            animation: shimmer 2.8s infinite ease-in-out;
+          }
+        
+          @keyframes shimmer {
+            0% {
+              transform: translateX(-140%);
+            }
+            100% {
+              transform: translateX(140%);
+            }
+          }
+        
+          @keyframes pulse {
+            0%, 100% {
+              transform: scale(1);
+              box-shadow: 0 12px 28px rgba(255, 110, 80, 0.4);
+            }
+            50% {
+              transform: scale(1.05);
+              box-shadow: 0 18px 36px rgba(124, 58, 237, 0.5);
+            }
+          }
+        </style>
+        // ...existing code...
+      <div class="gif">
+        <img src="{{ url_for('static', filename='rename.gif') }}" alt="gif" />
+      </div>
+    </div>
+
+    <div id="loginModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <button type="button" class="close-btn" aria-label="Close login popup">&times;</button>
+
+        <div class="brand">
+          <div class="logo-mark"><i class="fa-solid fa-shield-halved"></i></div>
+        </div>
+
+        <h2>Welcome Back</h2>
+        <div class="subtitle">Sign in or create an account</div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="roleSelect">Login as</label>
+            <select id="roleSelect">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required />
+          </div>
+
+          <button type="submit" class="login-btn">Login</button>
+
+          <div class="register-row">
+            <button type="button" class="register-btn" data-role="user">Register as User</button>
+            <button type="button" class="register-btn secondary" data-role="admin">Register as Admin</button>
+          </div>
+        </form>
+
+        <p id="loginMessage"></p>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.getElementById("loginModal");
+      const loginForm = document.getElementById("loginForm");
+      const closeBtn = document.querySelector(".close-btn");
+      const loginMessage = document.getElementById("loginMessage");
+      const roleSelect = document.getElementById("roleSelect");
+      const modeBadge = document.getElementById("modeBadge");
+      const navMenu = document.getElementById("navMenu");
+
+      function renderNav(role) {
+        let items = [];
+        if (role === "admin") {
+          items = [
+            { icon: "fa-solid fa-gauge", text: "Dashboard", link:"dashboard.html" },
+            { icon: "fa-solid fa-users", text: "Users", link: "#" },
+            { icon: "fa-solid fa-box", text: "Inventory", link: "#" },
+            { icon: "fa-solid fa-chart-line", text: "Reports", link: "#" },
+            { icon: "fa-solid fa-gear", text: "Settings", link: "#" },
+            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
+            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
+            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
+          ];
+        } else if (role === "user") {
+          items = [
+            { icon: "fa-solid fa-user", text: "Profile", link: "#" },
+            { icon: "fa-solid fa-bag-shopping", text: "My Orders", link: "#" },
+            { icon: "fa-solid fa-heart", text: "Wishlist", link: "#" },
+            { icon: "fa-solid fa-headset", text: "Support", link: "#" },
+            { icon: "fa-solid fa-house", text: "Home", link: "#" },
+            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
+            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
+            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
+          ];
+        } else {
+          items = [
+            { icon: "fa-solid fa-image", text: "Products", link: "#" },
+            { icon: "fa-solid fa-arrow-up-right-from-square", text: "Shortcuts", link: "#" },
+            { icon: "fa-solid fa-photo-film", text: "Exhibits", link: "#" },
+            { icon: "fa-solid fa-calendar-days", text: "Events", link: "#" },
+            { icon: "fa-solid fa-store", text: "Store", link: "#" },
+            { icon: "fa-solid fa-phone", text: "Contact", link: "#" },
+            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
+            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
+            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
+          ];
+        }
+
+        navMenu.innerHTML = items.map(item => `
+          <li>
+            <i class="${item.icon}"></i>
+            <a href="${item.link}">${item.text}</a>
+          </li>
+        `).join("");
+      }
+
+      function setPageRole(role) {
+        document.body.setAttribute("data-role", role);
+
+        if (role === "admin") {
+          modeBadge.textContent = "Mode: Admin";
+          document.querySelector(".logo a").textContent = "Detoxer Admin";
+        } else if (role === "user") {
+          modeBadge.textContent = "Mode: User";
+          document.querySelector(".logo a").textContent = "Detoxer User";
+        } else {
+          modeBadge.textContent = "Mode: Guest";
+          document.querySelector(".logo a").textContent = "Detoxer";
+        }
+
+        renderNav(role);
+      }
+
+      setPageRole("guest");
+
+      setTimeout(() => {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+      }, 5000);
+
+      closeBtn.addEventListener("click", () => {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("show");
+          modal.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      async function registerUser(role) {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!username || !password) {
+          loginMessage.textContent = "Username and password are required";
+          loginMessage.className = "error";
+          return;
+        }
+
+        const response = await fetch("/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            username,
+            password,
+            role
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          loginMessage.textContent = result.message;
+          loginMessage.className = "success";
+          setPageRole(role);
+          roleSelect.value = role;
+        } else {
+          loginMessage.textContent = result.message;
+          loginMessage.className = "error";
+        }
+      }
+
+      document.querySelectorAll(".register-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const role = button.dataset.role;
+          roleSelect.value = role;
+          registerUser(role);
+        });
+      });
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const role = roleSelect.value;
+
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            username,
+            password,
+            role
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          loginMessage.textContent = result.message;
+          loginMessage.className = "success";
+          setPageRole(role);
+          modal.classList.remove("show");
+        } else {
+          loginMessage.textContent = result.message;
+          loginMessage.className = "error";
+        }
+      });
+    </script>
+  </body>
+</html>

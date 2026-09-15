@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detoxer | Camera Accessories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='product.css') }}" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container nav">
+        <div class="brand">
+          <span class="brand-mark">D</span>
+          <span>Detoxer</span>
+        </div>
+
+        <nav class="menu">
+          <a href="{{ url_for('home') }}">Home</a>
+          <a href="{{ url_for('user_products') }}">Products</a>
+          <a href="#">Deals</a>
+          <a href="#">Support</a>
+          {% if session.get('username') %}
+            <a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a>
+          {% else %}
+            <a href="{{ url_for('home') }}">Login</a>
+          {% endif %}
+        </nav>
+
+        <div class="cart-box">
+          <span>🛒</span>
+          <span>Cart</span>
+          <strong id="cartCount">{{ cart_count or 0 }}</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- ============= HERO ============= -->
+      <section class="hero">
+        <div class="hero-text">
+          <p class="eyebrow">Premium camera gear</p>
+          <h1>Capture sharper moments</h1>
+          <p>
+            Explore premium camera accessories built for creators, photographers,
+            and vloggers. From lenses and tripods to lighting gear and storage
+            essentials.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="shopNowBtn">Shop Now</button>
+            <button class="btn btn-secondary" id="viewDealsBtn">View Deals</button>
+          </div>
+
+          <ul class="stats">
+            <li><strong>20K+</strong><span>Happy buyers</span></li>
+            <li><strong>4.9/5</strong><span>Customer rating</span></li>
+            <li><strong>2-Day</strong><span>Fast delivery</span></li>
+          </ul>
+        </div>
+
+        {% if featured %}
+        <div class="feature-card">
+          <img src="{{ featured.image_url }}" alt="{{ featured.name }}" />
+          <div class="feature-content">
+            <span class="tag">Featured</span>
+            <h3>{{ featured.name }}</h3>
+            <p>{{ featured.description or 'Top pick from our collection.' }}</p>
+            <div class="price-row">
+              <span class="price-amount">${{ '%.0f' % featured.price }}</span>
+              <div class="mini-actions">
+                <button
+                  class="mini-btn add-cart-btn"
+                  data-id="{{ featured.id }}"
+                  type="button">Add</button>
+                <button
+                  class="mini-btn buy-now-btn"
+                  data-id="{{ featured.id }}"
+                  type="button">Buy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- ============= PRODUCTS ============= -->
+      <section class="products" id="productsSection">
+        <div class="section-head">
+          <h2>Camera Accessories</h2>
+          <div class="filter" id="filterBar">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="Lenses">Lenses</button>
+            <button data-filter="Lighting">Lighting</button>
+            <button data-filter="Storage">Storage</button>
+            <button data-filter="Tripods">Tripods</button>
+          </div>
+        </div>
+
+        <div class="grid" id="productGrid">
+          {% for p in products %}
+          <article class="card" data-category="{{ p.category }}" data-id="{{ p.id }}">
+            <div class="card-image">
+              <img src="{{ p.image_url or 'https://via.placeholder.com/400x300?text=No+Image' }}"
+                   alt="{{ p.name }}" />
+              {% if p.stock < 10 %}
+                <span class="badge">Only {{ p.stock }} left</span>
+              {% elif loop.index0 < 2 %}
+                <span class="badge">Popular</span>
+              {% endif %}
+            </div>
+            <div class="card-body">
+              <div class="card-top">
+                <h3>{{ p.name }}</h3>
+                <span class="rating">★ 4.8</span>
+              </div>
+              <p>{{ p.description or 'Premium quality camera accessory.' }}</p>
+              <div class="price-wrap">
+                <span class="price">${{ '%.0f' % p.price }}</span>
+                <span class="old-price">${{ '%.0f' % (p.price * 1.25) }}</span>
+              </div>
+              <div class="card-actions">
+                <button class="small-btn cart-btn add-cart-btn"
+                        data-id="{{ p.id }}" type="button">Add to Cart</button>
+                <button class="small-btn buy-btn buy-now-btn"
+                        data-id="{{ p.id }}" type="button">Buy Now</button>
+              </div>
+            </div>
+          </article>
+          {% else %}
+          <p style="color:#a8b5cc; grid-column:1/-1; text-align:center; padding:40px;">
+            No products available yet.
+          </p>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- ============= REVIEWS ============= -->
+      <section class="reviews" id="reviewsSection">
+        <div class="section-head">
+          <h2>Customer Reviews</h2>
+        </div>
+
+        <div class="review-layout">
+          <div class="box">
+            <form class="review-form" id="reviewForm">
+              <h3>Write a Review</h3>
+
+              <label>
+                Product
+                <select name="product_id" id="reviewProduct" required>
+                  <option value="">Select a product</option>
+                  {% for p in products %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                Rating
+                <select name="rating" required>
+                  <option value="">Select</option>
+                  <option value="5">5 - Excellent</option>
+                  <option value="4">4 - Very Good</option>
+                  <option value="3">3 - Good</option>
+                  <option value="2">2 - Fair</option>
+                  <option value="1">1 - Poor</option>
+                </select>
+              </label>
+
+              <label>
+                Review
+                <textarea name="review_text" rows="4"
+                          placeholder="Share your experience..." required></textarea>
+              </label>
+
+              <button type="submit" class="btn btn-primary full">Submit Review</button>
+              <p id="reviewMessage" style="margin-top:10px;font-weight:600;"></p>
+            </form>
+          </div>
+
+          <div class="box">
+            <div class="review-summary">
+              <div class="score" id="avgScore">{{ avg_rating or '0.0' }}</div>
+              <div>
+                <p>Average rating</p>
+                <span>Based on {{ reviews|length }} review{{ 's' if reviews|length != 1 else '' }}</span>
+              </div>
+            </div>
+
+            <ul class="review-list" id="reviewList">
+              {% for r in reviews %}
+              <li class="review-item">
+                <div class="review-head">
+                  <span class="review-name">{{ r.username }}</span>
+                  <span class="stars">
+                    {% for i in range(r.rating) %}★{% endfor %}{% for i in range(5 - r.rating) %}☆{% endfor %}
+                  </span>
+                </div>
+                <p>{{ r.review_text }}</p>
+              </li>
+              {% else %}
+              <li class="review-item">
+                <p style="color:#a8b5cc;">No reviews yet. Be the first to review!</p>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /* ============================================================
+         CART
+         ============================================================ */
+      document.querySelectorAll(".add-cart-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const pid = btn.dataset.id;
+          try {
+            const res = await fetch("/cart/add", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ product_id: pid, quantity: 1 }),
+            });
+            const data = await res.json();
+            if (data.success) {
+              const counter = document.getElementById("cartCount");
+              counter.textContent = data.cart_count;
+              btn.textContent = "Added ✓";
+              setTimeout(() => btn.textContent = "Add to Cart", 1200);
+            } else {
+              alert(data.message || "Could not add to cart");
+            }
+          } catch (e) {
+            alert("Network error");
+          }
+        });
+      });
+
+      /* ============================================================
+         BUY NOW
+         ============================================================ */
+      document.querySelectorAll(".buy-now-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const pid = btn.dataset.id;
+          try {
+            const res = await fetch("/order/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ product_id: pid, quantity: 1 }),
+            });
+            const data = await res.json();
+            if (data.success) {
+              alert("✅ Order placed!");
+              window.location.href = "/orders";
+            } else {
+              alert(data.message || "Could not place order");
+            }
+          } catch (e) {
+            alert("Network error");
+          }
+        });
+      });
+
+      /* ============================================================
+         FILTER
+         ============================================================ */
+      document.querySelectorAll("#filterBar button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#filterBar button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const filter = btn.dataset.filter;
+          document.querySelectorAll("#productGrid .card").forEach(card => {
+            const show = filter === "all" || card.dataset.category === filter;
+            card.style.display = show ? "" : "none";
+          });
+        });
+      });
+
+      /* ============================================================
+         SUBMIT REVIEW
+         ============================================================ */
+      const reviewForm = document.getElementById("reviewForm");
+      reviewForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(reviewForm);
+        const pid = fd.get("product_id");
+        const msg = document.getElementById("reviewMessage");
+
+        msg.textContent = "Submitting…";
+        msg.style.color = "#a8b5cc";
+
+        try {
+          const res = await fetch(`/product/${pid}/review`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+              rating: fd.get("rating"),
+              review_text: fd.get("review_text"),
+            }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            msg.textContent = "✅ Review submitted. Thank you!";
+            msg.style.color = "#4ade80";
+            reviewForm.reset();
+            setTimeout(() => window.location.reload(), 900);
+          } else {
+            msg.textContent = data.message || "Could not submit review";
+            msg.style.color = "#f87171";
+          }
+        } catch (err) {
+          msg.textContent = "Network error";
+          msg.style.color = "#f87171";
+        }
+      });
+
+      /* ============================================================
+         HERO BUTTONS
+         ============================================================ */
+      document.getElementById("shopNowBtn").addEventListener("click", () => {
+        document.getElementById("productsSection").scrollIntoView({ behavior: "smooth" });
+      });
+      document.getElementById("viewDealsBtn").addEventListener("click", () => {
+        document.getElementById("productsSection").scrollIntoView({ behavior: "smooth" });
+      });
+    </script>
+  </body>
+</html>

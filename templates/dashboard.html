@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detoxer Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">D</div>
+        <div>
+          <span class="brand-name">Detoxer</span>
+          <small>Admin</small>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('dashboard') }}" class="nav-item active">Overview</a>
+        <a href="{{ url_for('user_products') }}" class="nav-item">Store View</a>
+        <a href="#" class="nav-item">Orders</a>
+        <a href="#" class="nav-item">Customers</a>
+        <a href="#" class="nav-item">Settings</a>
+        <a href="{{ url_for('logout') }}" class="nav-item">Logout</a>
+      </nav>
+
+      <div class="sidebar-card">
+        <p>Monthly sales</p>
+        <h3>$24.8K</h3>
+        <span class="up">+18.4% from last month</span>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1>Product Overview</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="secondary-btn" id="exportBtn" type="button">Export CSV</button>
+          <button class="primary-btn" id="addProductBtn" type="button">+ Add Product</button>
+        </div>
+      </header>
+
+      <!-- STATS -->
+      <section class="stats-grid">
+        <div class="stat-card accent-purple">
+          <div class="stat-header">
+            <span>Total Products</span>
+            <span class="chip success">Live</span>
+          </div>
+          <h2 id="totalProducts">0</h2>
+          <p>Across all categories</p>
+        </div>
+
+        <div class="stat-card accent-blue">
+          <div class="stat-header">
+            <span>Low Stock</span>
+            <span class="chip warn">Inventory</span>
+          </div>
+          <h2 id="lowStockCount">0</h2>
+          <p>Need restocking soon</p>
+        </div>
+
+        <div class="stat-card accent-gold">
+          <div class="stat-header">
+            <span>Average Price</span>
+            <span class="chip neutral">$ avg</span>
+          </div>
+          <h2 id="averagePrice">$0</h2>
+          <p>Baseline product price</p>
+        </div>
+      </section>
+
+      <!-- CONTENT -->
+      <section class="content-grid">
+        <div class="panel panel-large">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Inventory</p>
+              <h3>Product List</h3>
+            </div>
+            <div class="search-box">
+              <input type="text" id="searchInput" placeholder="Search products..." />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:30px;color:#667085;">
+                    Loading…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-side">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Performance</p>
+              <h3>Top Categories</h3>
+            </div>
+          </div>
+          <div class="category-list" id="categoryList"></div>
+          <div class="mini-chart">
+            <div class="bar" style="height:34%"></div>
+            <div class="bar" style="height:52%"></div>
+            <div class="bar" style="height:76%"></div>
+            <div class="bar" style="height:58%"></div>
+            <div class="bar" style="height:90%"></div>
+            <div class="bar" style="height:68%"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal hidden" id="productModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Product</h3>
+        <button type="button" class="close-btn" id="closeModalBtn">&times;</button>
+      </div>
+
+      <form id="productForm">
+        <input type="hidden" name="product_id" id="productId" />
+
+        <div class="form-grid">
+          <label>
+            Product Name
+            <input type="text" name="product_name" id="productName" required />
+          </label>
+          <label>
+            Category
+            <input type="text" name="category" id="category" required />
+          </label>
+          <label>
+            Price ($)
+            <input type="number" name="price" id="price" min="0" step="0.01" required />
+          </label>
+          <label>
+            Stock Quantity
+            <input type="number" name="stock_quantity" id="stockQuantity" min="0" required />
+          </label>
+          <label>
+            Status
+            <select name="status" id="status">
+              <option>In Stock</option>
+              <option>Low Stock</option>
+              <option>Critical</option>
+            </select>
+          </label>
+          <label>
+            Image URL
+            <input type="url" name="image_url" id="imageUrl" placeholder="https://..." />
+          </label>
+          <label class="full-width">
+            Description
+            <textarea name="product_description" id="description" rows="3"></textarea>
+          </label>
+          <label class="full-width">
+            Review (optional)
+            <textarea name="review" id="review" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
+          <button type="submit" class="primary-btn" id="saveBtn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>

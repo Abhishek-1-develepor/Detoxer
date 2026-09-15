@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+venv/
+env/
+.venv/
+
+# Flask
+instance/
+*.db
+app.db
+
+# ML artifacts (optional — remove if you want to commit model)
+# ml_artifacts/*.pkl
+
+# Data
+*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

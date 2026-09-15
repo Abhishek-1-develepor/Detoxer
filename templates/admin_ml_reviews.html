@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review Analysis — {{ product.product_name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin_ml_reviews.css') }}" />
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="head">
+      <div>
+        <p class="eyebrow">ML Review Analysis</p>
+        <h1>{{ product.product_name }}</h1>
+        <p class="muted">{{ product.category }} · ${{ '%.0f' % product.price }}</p>
+      </div>
+      <a href="{{ url_for('dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    </header>
+
+    <!-- BLOCK 1 — SUMMARY -->
+    <section class="card">
+      <h2>Summary</h2>
+      <div class="summary-grid">
+        <div class="stat">
+          <span class="stat-label">Total Reviews</span>
+          <strong>{{ report.summary.total }}</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Average Rating</span>
+          <strong>{{ report.summary.avg_rating }} / 5</strong>
+        </div>
+        <div class="stat stat-positive">
+          <span class="stat-label">Positive</span>
+          <strong>{{ report.summary.positive }} ({{ report.summary.positive_pct }}%)</strong>
+        </div>
+        <div class="stat stat-neutral">
+          <span class="stat-label">Neutral</span>
+          <strong>{{ report.summary.neutral }} ({{ report.summary.neutral_pct }}%)</strong>
+        </div>
+        <div class="stat stat-negative">
+          <span class="stat-label">Negative</span>
+          <strong>{{ report.summary.negative }} ({{ report.summary.negative_pct }}%)</strong>
+        </div>
+      </div>
+
+      <div class="sentiment-bar">
+        <div class="seg pos" style="width: {{ report.summary.positive_pct }}%"></div>
+        <div class="seg neu" style="width: {{ report.summary.neutral_pct }}%"></div>
+        <div class="seg neg" style="width: {{ report.summary.negative_pct }}%"></div>
+      </div>
+      <div class="legend">
+        <span><i class="dot pos"></i> Positive</span>
+        <span><i class="dot neu"></i> Neutral</span>
+        <span><i class="dot neg"></i> Negative</span>
+      </div>
+    </section>
+
+    <!-- BLOCK 2 — RATING BREAKDOWN -->
+    <section class="card">
+      <h2>Rating Breakdown</h2>
+      {% for star in [5, 4, 3, 2, 1] %}
+        {% set count = report.rating_buckets[star] %}
+        {% set pct = (count / report.summary.total * 100) | round if report.summary.total else 0 %}
+        <div class="rating-row">
+          <span class="star">{{ star }}★</span>
+          <div class="track"><div class="fill" style="width: {{ pct }}%"></div></div>
+          <span class="count">{{ count }}</span>
+        </div>
+      {% endfor %}
+    </section>
+
+    <!-- BLOCK 3 — ALL REVIEWS -->
+    <section class="card">
+      <h2>All Reviews</h2>
+      {% if report.reviews %}
+        <ul class="review-list">
+          {% for r in report.reviews %}
+            <li class="review-item">
+              <div class="review-head">
+                <div>
+                  <strong>{{ r.username }}</strong>
+                  <small>{{ r.created_at[:10] }} · ⭐ {{ r.rating }}/5</small>
+                </div>
+                <span class="badge {{ r.sentiment }}">
+                  {{ r.sentiment|capitalize }} · {{ (r.confidence * 100) | round }}%
+                </span>
+              </div>
+              <p>{{ r.review_text }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">No reviews yet.</p>
+      {% endif %}
+    </section>
+
+    <!-- BLOCK 4 — COMPLAINTS -->
+    <section class="card">
+      <h2>Complaints / Customer Demands</h2>
+      <p class="muted small">Auto-flagged: negative sentiment or rating ≤ 2</p>
+
+      {% if report.complaints %}
+        <ul class="complaint-list">
+          {% for c in report.complaints %}
+            <li class="complaint-item">
+              <div class="review-head">
+                <div>
+                  <strong>{{ c.username }}</strong>
+                  <small>{{ c.created_at[:10] }} · ⭐ {{ c.rating }}/5</small>
+                </div>
+                <span class="badge negative">{{ (c.confidence * 100) | round }}%</span>
+              </div>
+              <p>{{ c.review_text }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">🎉 No complaints for this product.</p>
+      {% endif %}
+    </section>
+
+  </div>
+</body>
+</html>
