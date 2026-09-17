@@ -310,6 +310,9 @@ def dashboard():
     products = get_products()
     return render_template("dashboard.html", products=products)
 
+@app.route("/contact.html")
+def contact():
+   return render_template("contact.html")
 
 @app.route("/products")
 @app.route("/products.html")
