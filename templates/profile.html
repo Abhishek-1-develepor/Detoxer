@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — Detoxer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="wrap nav-row">
+      <div class="brand">
+        <span class="brand-mark">D</span>
+        <span>Detoxer</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('user_products') }}">Products</a>
+        <a href="{{ url_for('orders') }}">Orders</a>
+        <a href="{{ url_for('profile') }}" class="active">Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- HERO / USER CARD -->
+    <section class="profile-hero">
+      <div class="profile-avatar">{{ username[:1]|upper }}</div>
+      <div class="profile-info">
+        <p class="eyebrow">My Profile</p>
+        <h1>{{ username }}</h1>
+        <p class="role-badge">{{ role|capitalize }}</p>
+      </div>
+      <a href="{{ url_for('user_products') }}" class="btn-primary">Continue Shopping →</a>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-grid">
+      <div class="stat-card accent-purple">
+        <p class="stat-label">Total Reviews</p>
+        <h2>{{ total_reviews }}</h2>
+      </div>
+      <div class="stat-card accent-blue">
+        <p class="stat-label">Average Rating Given</p>
+        <h2>{{ avg_rating }} ★</h2>
+      </div>
+      <div class="stat-card accent-gold">
+        <p class="stat-label">Orders Placed</p>
+        <h2>{{ total_orders }}</h2>
+      </div>
+      <div class="stat-card accent-green">
+        <p class="stat-label">Total Spent</p>
+        <h2>${{ '%.0f' % total_spent }}</h2>
+      </div>
+    </section>
+
+    <!-- TWO COLUMNS -->
+    <section class="content-grid">
+
+      <!-- LEFT: My Reviews -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">Activity</p>
+            <h3>My Reviews</h3>
+          </div>
+          <span class="chip neutral">{{ total_reviews }} total</span>
+        </div>
+
+        {% if reviews %}
+          <ul class="review-list">
+            {% for r in reviews %}
+              <li class="review-item">
+                <div class="review-head">
+                  <div class="review-product">
+                    <div class="thumb" style="background-image: url('{{ r.image_url or '' }}');"></div>
+                    <div>
+                      <strong>{{ r.product_name }}</strong>
+                      <small>{{ r.category }}</small>
+                    </div>
+                  </div>
+                  <div class="rating-stars">
+                    {% for i in range(r.rating) %}★{% endfor %}{% for i in range(5 - r.rating) %}☆{% endfor %}
+                  </div>
+                </div>
+                <p class="review-text">{{ r.review_text }}</p>
+                <small class="review-date">{{ r.created_at[:10] }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty">
+            <p>You haven't written any reviews yet.</p>
+            <a href="{{ url_for('user_products') }}" class="btn-secondary">Write a Review</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: My Orders -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">History</p>
+            <h3>My Orders</h3>
+          </div>
+          <span class="chip neutral">{{ total_orders }} total</span>
+        </div>
+
+        {% if orders %}
+          <ul class="order-list">
+            {% for o in orders %}
+              <li class="order-item">
+                <div class="order-info">
+                  <strong>{{ o.name }}</strong>
+                  <small>Qty: {{ o.quantity }} · ${{ '%.0f' % o.unit_price }} each</small>
+                </div>
+                <div class="order-total">${{ '%.0f' % o.total }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+
+          <div class="order-summary">
+            <span>Total Spent</span>
+            <strong>${{ '%.0f' % total_spent }}</strong>
+          </div>
+        {% else %}
+          <div class="empty">
+            <p>No orders yet.</p>
+            <a href="{{ url_for('user_products') }}" class="btn-secondary">Start Shopping</a>
+          </div>
+        {% endif %}
+      </div>
+
+    </section>
+  </main>
+
+</body>
+</html>

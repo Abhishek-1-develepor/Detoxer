@@ -1,510 +1,647 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSS Project</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detoxer — Premium Camera Gear</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <style>
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: #0d0d0e;
-        color: #e5e7eb;
-      }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 
-      body[data-role="admin"] {
-        background: linear-gradient(180deg, #0c0c0c 0%, #070707 100%);
-      }
+  <style>
+    * { box-sizing: border-box; }
 
-      body[data-role="user"] {
-        background: linear-gradient(180deg, #140d1d 0%, #0b1020 100%);
-      }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: #0d0d0e;
+      color: #e5e7eb;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-      .mode-badge {
-        position: fixed;
-        top: 18px;
-        right: 20px;
-        z-index: 1000;
-        padding: 8px 16px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        background: rgba(10, 10, 10, 0.12);
-        border: 1px solid rgba(5, 5, 5, 0.22);
-        color: #dbeafe;
-      }
+    /* Role-based page backgrounds */
+    body[data-role="guest"] {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.15), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.12), transparent 40%),
+        #0d0d0e;
+    }
 
-      body[data-role="admin"] .mode-badge {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: rgba(74, 222, 128, 0.35);
-        color: #dcfce7;
-      }
+    body[data-role="admin"] {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.10), transparent 40%),
+        linear-gradient(180deg, #0c0c0c 0%, #070707 100%);
+    }
 
-      body[data-role="user"] .mode-badge {
-        background: rgba(168, 85, 247, 0.1);
-        border-color: rgba(196, 181, 253, 0.35);
-        color: #f3e8ff;
-      }
+    body[data-role="user"] {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.12), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.10), transparent 40%),
+        linear-gradient(180deg, #140d1d 0%, #0b1020 100%);
+    }
 
-      .intro img, .gif img { display: block; width: 100%; }
-      .main_box { position: relative; z-index: 1; }
-      .sidebar_menu {
-        background: rgba(8, 8, 8, 0.85);
-        backdrop-filter: blur(8px);
-        border-right: 1px solid rgba(148, 163, 184, 0.12);
-      }
-      .logo a { color: #ffffff; text-decoration: none; }
+    /* Mode badge (top-right) */
+    .mode-badge {
+      position: fixed;
+      top: 18px;
+      right: 20px;
+      z-index: 1000;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(10, 10, 10, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #dbeafe;
+      backdrop-filter: blur(8px);
+    }
+    body[data-role="admin"] .mode-badge {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(74, 222, 128, 0.35);
+      color: #dcfce7;
+    }
+    body[data-role="user"] .mode-badge {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: rgba(196, 181, 253, 0.35);
+      color: #f3e8ff;
+    }
 
-      body[data-role="admin"] .logo a { color: #86efac; }
-      body[data-role="user"] .logo a { color: #d8b4fe; }
+    /* Page layout */
+    .page {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
 
-      .menu ul { list-style: none; padding: 0; margin: 0; }
-      .menu li {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 18px;
-        transition: 0.25s ease;
-      }
-      .menu li:hover { background: rgba(10, 10, 10, 0.12); }
-      .menu a { text-decoration: none; color: #e2e8f0; }
-      .menu i { color: #93c5fd; }
+    /* Sidebar */
+    .sidebar_menu {
+      background: rgba(8, 8, 8, 0.85);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid rgba(148, 163, 184, 0.1);
+      padding: 24px 0 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .modal {
-        position: fixed;
-        inset: 0;
-        background: rgba(8, 8, 8, 0.72);
-        backdrop-filter: blur(8px);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: 20px;
-      }
-      .modal.show { display: flex; }
+    .logo {
+      padding: 0 22px 20px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
 
-      .modal-content {
-        position: relative;
-        width: min(430px, 100%);
-        background: linear-gradient(145deg, rgba(8, 8, 8, 0.96), rgba(15, 23, 42, 0.9));
-        border: 1px solid rgba(12, 12, 12, 0.2);
-        border-radius: 22px;
-        padding: 30px 26px 24px;
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
-      }
+    .logo a {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    body[data-role="admin"] .logo a { color: #86efac; }
+    body[data-role="user"]  .logo a { color: #d8b4fe; }
 
-      .close-btn {
-        position: absolute;
-        top: 14px;
-        right: 18px;
-        border: none;
-        background: rgba(0, 0, 0, 0.12);
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        font-size: 22px;
-        cursor: pointer;
-        color: #f3f4f5;
-      }
+    .menu ul {
+      list-style: none;
+      padding: 0 12px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
-      .brand { text-align: center; margin-bottom: 18px; }
-      .brand .logo-mark {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        font-size: 24px;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-      }
+    .menu li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      transition: background 0.2s ease;
+    }
 
-      .modal-content h2 {
-        text-align: center;
-        margin: 10px 0 8px;
-        color: #f8fafc;
-        font-size: 2rem;
-      }
+    .menu li:hover {
+      background: rgba(148, 163, 184, 0.08);
+    }
 
-      .subtitle {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 0.9rem;
-        margin-bottom: 22px;
-      }
+    .menu i {
+      color: #93c5fd;
+      width: 20px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
 
-      .field { margin-bottom: 18px; }
-      .field label {
-        display: block;
-        margin-bottom: 8px;
-        color: #dbeafe;
-        font-weight: 600;
-        font-size: 0.92rem;
-      }
-      .field input, .field select {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 13px 14px;
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        border-radius: 12px;
-        outline: none;
-        font-size: 15px;
-        background: rgba(10, 10, 10, 0.8);
-        color: #f8fafc;
-      }
+    .menu a {
+      text-decoration: none;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
 
-      .field input::placeholder { color: #64748b; }
+    .menu a:hover { color: #fff; }
 
-      .login-btn, .register-btn {
-        width: 100%;
-        padding: 14px 16px;
-        border: none;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-        color: white;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        margin-top: 8px;
-      }
+    /* Content area */
+    .content {
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: relative;
+    }
 
-      .register-btn.secondary {
-        background: linear-gradient(135deg, #10b981, #14b8a6);
-      }
+    .intro {
+      display: flex;
+      justify-content: center;
+    }
 
-      .register-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
+    .intro img {
+      max-width: 260px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-      .register-row .register-btn {
-        flex: 1;
-      }
+    .hero {
+      max-width: 620px;
+    }
 
-      #loginMessage {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 14px;
-        min-height: 22px;
-        font-weight: 500;
-      }
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.045em;
+      margin: 0 0 14px;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #ffffff, #c4b5fd 60%, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-      .success { color: #4ade80; }
-      .error { color: #f87171; }
-    </style>
-  </head>
+    .hero p {
+      color: #94a3b8;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 0 0 26px;
+    }
 
-  <body data-role="guest">
-    <div class="mode-badge" id="modeBadge">Mode: Guest</div>
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-    <div class="more">
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff9a00, #ff4d8d 45%, #7c3aed);
+      color: #ffffff;
+      box-shadow: 0 14px 30px rgba(255, 110, 80, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 38px rgba(124, 58, 237, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .gif {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .gif img {
+      max-width: 480px;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+    }
+
+    /* ============================
+       LOGIN MODAL
+       ============================ */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.75);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    .modal.show { display: flex; }
+
+    .modal-content {
+      position: relative;
+      width: min(430px, 100%);
+      background: linear-gradient(145deg, rgba(15, 18, 28, 0.98), rgba(8, 10, 16, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 22px;
+      padding: 32px 28px 26px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      border: none;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      color: #f3f4f5;
+      transition: 0.2s ease;
+    }
+    .close-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+    .brand { text-align: center; margin-bottom: 18px; }
+
+    .brand .logo-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      font-size: 24px;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      box-shadow: 0 12px 28px rgba(124, 58, 237, 0.4);
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      margin: 10px 0 8px;
+      color: #f8fafc;
+      font-size: 1.85rem;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      margin-bottom: 22px;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #dbeafe;
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 12px;
+      outline: none;
+      font-size: 15px;
+      background: rgba(10, 10, 10, 0.7);
+      color: #f8fafc;
+      transition: 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(124, 58, 237, 0.6);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+    }
+
+    .field input::placeholder { color: #64748b; }
+
+    .login-btn,
+    .register-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: 0.2s ease;
+    }
+
+    .login-btn:hover,
+    .register-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .register-btn.secondary {
+      background: linear-gradient(135deg, #10b981, #14b8a6);
+    }
+
+    .register-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .register-row .register-btn {
+      flex: 1;
+      font-size: 13px;
+      padding: 12px;
+    }
+
+    #loginMessage {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 22px;
+      font-weight: 500;
+    }
+
+    .success { color: #4ade80; }
+    .error   { color: #f87171; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; }
+      .sidebar_menu { padding: 16px 0; }
+      .content { padding: 26px 20px; }
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      .cta-row { flex-direction: column; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+
+<body data-role="guest">
+  <div class="mode-badge" id="modeBadge">Mode: Guest</div>
+
+  <div class="page">
+    <!-- ============================
+         SIDEBAR
+         ============================ -->
+    <aside class="sidebar_menu">
+      <div class="logo">
+        <a href="{{ url_for('home') }}">Detoxer</a>
+      </div>
+
+      <div class="menu">
+        <ul id="navMenu">
+          <!-- Rendered by JS -->
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ============================
+         MAIN CONTENT
+         ============================ -->
+    <main class="content">
       <div class="intro">
-        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="logo" />
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Detoxer" />
       </div>
 
-      <div class="main_box">
-        <div class="sidebar_menu">
-          <div class="logo">
-            <a href="#">Detoxer</a>
-          </div>
+      <div class="hero">
+        <h1>Capture sharper moments.</h1>
+        <p>
+          Premium camera gear and electronics — curated for creators, photographers,
+          and vloggers. From lenses and tripods to lighting gear and storage essentials.
+        </p>
 
-          <div class="menu">
-            <ul id="navMenu">
-              <li><i class="fa-solid fa-image"></i><a href="#">Products</a></li>
-              <li><i class="fa-solid fa-arrow-up-right-from-square"></i><a href="#">Shortcuts</a></li>
-              <li><i class="fa-solid fa-photo-film"></i><a href="#">Exhibits</a></li>
-              <li><i class="fa-solid fa-calendar-days"></i><a href="#">Events</a></li>
-              <li><i class="fa-solid fa-store"></i><a href="#">Store</a></li>
-              <li><i class="fa-solid fa-phone"></i><a href="contact.html">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-        {% if session.get('username') %}
-          <div class="explore-cta">
-            <a href="products.html" class="explore-btn">
-              <span class="shine"></span>
-              Explore New Products
+        <div class="cta-row">
+          <a href="{{ url_for('user_products') }}" class="btn btn-primary">
+            Explore Products →
+          </a>
+
+          {% if not session.get('username') %}
+            <button type="button" class="btn btn-secondary" id="openLoginBtn">
+              Login / Register
+            </button>
+          {% else %}
+            <a href="{{ url_for('profile') }}" class="btn btn-secondary">
+              My Profile
             </a>
-          </div>
-        {% endif %}
-        
-        <style>
-          .explore-cta {
-            position: fixed;
-            top: 150px;
-            left: 400px;
-            z-index: 1000;
-          }
-        
-          .explore-btn {
-            position: relative;
-            display: inline-block;
-            padding: 18px 32px;
-            border-radius: 18px;
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, #ff9a00, #ff4d8d 45%, #7c3aed);
-            border: 1px solid rgba(255,255,255,0.22);
-            box-shadow: 0 14px 30px rgba(255, 110, 80, 0.45);
-            overflow: hidden;
-            animation: pulse 1.8s infinite ease-in-out;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-          }
-        
-          .explore-btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 18px 38px rgba(124, 58, 237, 0.52);
-          }
-        
-          .explore-btn .shine {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-              120deg,
-              transparent 20%,
-              rgba(255,255,255,0.8) 50%,
-              transparent 80%
-            );
-            transform: translateX(-140%);
-            animation: shimmer 2.8s infinite ease-in-out;
-          }
-        
-          @keyframes shimmer {
-            0% {
-              transform: translateX(-140%);
-            }
-            100% {
-              transform: translateX(140%);
-            }
-          }
-        
-          @keyframes pulse {
-            0%, 100% {
-              transform: scale(1);
-              box-shadow: 0 12px 28px rgba(255, 110, 80, 0.4);
-            }
-            50% {
-              transform: scale(1.05);
-              box-shadow: 0 18px 36px rgba(124, 58, 237, 0.5);
-            }
-          }
-        </style>
-        
-      <div class="gif">
-        <img src="{{ url_for('static', filename='rename.gif') }}" alt="gif" />
+          {% endif %}
+        </div>
       </div>
-    </div>
 
-    <div id="loginModal" class="modal" aria-hidden="true">
-      <div class="modal-content">
-        <button type="button" class="close-btn" aria-label="Close login popup">&times;</button>
+      <div class="gif">
+        <img src="{{ url_for('static', filename='rename.gif') }}" alt="Detoxer" />
+      </div>
+    </main>
+  </div>
 
-        <div class="brand">
-          <div class="logo-mark"><i class="fa-solid fa-shield-halved"></i></div>
+  <!-- ============================
+       LOGIN MODAL
+       ============================ -->
+  <div id="loginModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button type="button" class="close-btn" aria-label="Close">&times;</button>
+
+      <div class="brand">
+        <div class="logo-mark"><i class="fa-solid fa-shield-halved"></i></div>
+      </div>
+
+      <h2>Welcome Back</h2>
+      <div class="subtitle">Sign in or create an account</div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="roleSelect">Login as</label>
+          <select id="roleSelect">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
 
-        <h2>Welcome Back</h2>
-        <div class="subtitle">Sign in or create an account</div>
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter username" required />
+        </div>
 
-        <form id="loginForm">
-          <div class="field">
-            <label for="roleSelect">Login as</label>
-            <select id="roleSelect">
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password" required />
+        </div>
 
-          <div class="field">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required />
-          </div>
+        <button type="submit" class="login-btn">Login</button>
 
-          <div class="field">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" required />
-          </div>
+        <div class="register-row">
+          <button type="button" class="register-btn" data-role="user">Register as User</button>
+          <button type="button" class="register-btn secondary" data-role="admin">Register as Admin</button>
+        </div>
+      </form>
 
-          <button type="submit" class="login-btn">Login</button>
-
-          <div class="register-row">
-            <button type="button" class="register-btn" data-role="user">Register as User</button>
-            <button type="button" class="register-btn secondary" data-role="admin">Register as Admin</button>
-          </div>
-        </form>
-
-        <p id="loginMessage"></p>
-      </div>
+      <p id="loginMessage"></p>
     </div>
+  </div>
 
-    <script>
-      const modal = document.getElementById("loginModal");
-      const loginForm = document.getElementById("loginForm");
-      const closeBtn = document.querySelector(".close-btn");
-      const loginMessage = document.getElementById("loginMessage");
-      const roleSelect = document.getElementById("roleSelect");
-      const modeBadge = document.getElementById("modeBadge");
-      const navMenu = document.getElementById("navMenu");
+  <!-- ============================
+       SCRIPT
+       ============================ -->
+  <script>
+    const modal         = document.getElementById("loginModal");
+    const loginForm     = document.getElementById("loginForm");
+    const closeBtn      = document.querySelector(".close-btn");
+    const loginMessage  = document.getElementById("loginMessage");
+    const roleSelect    = document.getElementById("roleSelect");
+    const modeBadge     = document.getElementById("modeBadge");
+    const navMenu       = document.getElementById("navMenu");
+    const openLoginBtn  = document.getElementById("openLoginBtn");
 
-      function renderNav(role) {
-        let items = [];
-        if (role === "admin") {
-          items = [
-            { icon: "fa-solid fa-gauge", text: "Dashboard", link:"dashboard.html" },
-            { icon: "fa-solid fa-users", text: "Users", link: "#" },
-            { icon: "fa-solid fa-box", text: "Inventory", link: "#" },
-            { icon: "fa-solid fa-chart-line", text: "Reports", link: "#" },
-            { icon: "fa-solid fa-gear", text: "Settings", link: "#" },
-            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
-            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
-            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
-          ];
-        } else if (role === "user") {
-          items = [
-            { icon: "fa-solid fa-user", text: "Profile", link: "#" },
-            { icon: "fa-solid fa-bag-shopping", text: "My Orders", link: "#" },
-            { icon: "fa-solid fa-heart", text: "Wishlist", link: "#" },
-            { icon: "fa-solid fa-headset", text: "Support", link: "contact.html" },
-            { icon: "fa-solid fa-house", text: "Home", link: "#" },
-            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
-            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
-            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
-          ];
-        } else {
-          items = [
-            { icon: "fa-solid fa-image", text: "Products", link: "#" },
-            { icon: "fa-solid fa-arrow-up-right-from-square", text: "Shortcuts", link: "#" },
-            { icon: "fa-solid fa-photo-film", text: "Exhibits", link: "#" },
-            { icon: "fa-solid fa-calendar-days", text: "Events", link: "#" },
-            { icon: "fa-solid fa-store", text: "Store", link: "#" },
-            { icon: "fa-solid fa-phone", text: "Contact", link: "contact.html"
-              
-             },
-            {icon:"fa-brands fa-square-instagram", text:"Instagram", link:"#"},
-            {icon:"fa-brands fa-facebook", text:"Facebook", link:"#"},
-            {icon:"fa-brands fa-twitter", text:"Twitter", link:"#"},
-          ];
-        }
+    /* ---------- Render sidebar menu per role ---------- */
+    function renderNav(role) {
+      let items = [];
 
-        navMenu.innerHTML = items.map(item => `
-          <li>
-            <i class="${item.icon}"></i>
-            <a href="${item.link}">${item.text}</a>
-          </li>
-        `).join("");
+      if (role === "admin") {
+        items = [
+          { icon: "fa-solid fa-gauge",       text: "Dashboard", link: "/dashboard" },
+          { icon: "fa-solid fa-box",         text: "Inventory", link: "/dashboard" },
+          { icon: "fa-solid fa-chart-line",  text: "Reviews",   link: "/dashboard" },
+          { icon: "fa-solid fa-store",       text: "Store",     link: "/products"  },
+          { icon: "fa-solid fa-right-from-bracket", text: "Logout", link: "/logout" },
+        ];
+      } else if (role === "user") {
+        items = [
+          { icon: "fa-solid fa-user",          text: "Profile",   link: "/profile" },
+          { icon: "fa-solid fa-store",         text: "Products",  link: "/products" },
+          { icon: "fa-solid fa-bag-shopping",  text: "My Orders", link: "/orders" },
+          { icon: "fa-solid fa-phone",         text: "Contact",   link: "/contact.html" },
+          { icon: "fa-solid fa-right-from-bracket", text: "Logout", link: "/logout" },
+        ];
+      } else {
+        items = [
+          { icon: "fa-solid fa-image",           text: "Products",  link: "/products" },
+          { icon: "fa-solid fa-arrow-up-right-from-square", text: "Shortcuts", link: "#" },
+          { icon: "fa-solid fa-photo-film",      text: "Exhibits",  link: "#" },
+          { icon: "fa-solid fa-calendar-days",   text: "Events",    link: "#" },
+          { icon: "fa-solid fa-store",           text: "Store",     link: "/products" },
+          { icon: "fa-solid fa-phone",           text: "Contact",   link: "/contact.html" },
+        ];
       }
 
-      function setPageRole(role) {
-        document.body.setAttribute("data-role", role);
+      navMenu.innerHTML = items.map(item => `
+        <li>
+          <i class="${item.icon}"></i>
+          <a href="${item.link}">${item.text}</a>
+        </li>
+      `).join("");
+    }
 
-        if (role === "admin") {
-          modeBadge.textContent = "Mode: Admin";
-          document.querySelector(".logo a").textContent = "Detoxer Admin";
-        } else if (role === "user") {
-          modeBadge.textContent = "Mode: User";
-          document.querySelector(".logo a").textContent = "Detoxer User";
-        } else {
-          modeBadge.textContent = "Mode: Guest";
-          document.querySelector(".logo a").textContent = "Detoxer";
-        }
+    /* ---------- Set body role + logo text ---------- */
+    function setPageRole(role) {
+      document.body.setAttribute("data-role", role);
 
-        renderNav(role);
+      const logo = document.querySelector(".logo a");
+      if (role === "admin") {
+        modeBadge.textContent = "Mode: Admin";
+        logo.textContent = "Detoxer Admin";
+      } else if (role === "user") {
+        modeBadge.textContent = "Mode: User";
+        logo.textContent = "Detoxer User";
+      } else {
+        modeBadge.textContent = "Mode: Guest";
+        logo.textContent = "Detoxer";
       }
 
+      renderNav(role);
+    }
+
+    /* ---------- Initial state from server session ---------- */
+    {% if session.get('username') %}
+      setPageRole("{{ session.get('role', 'user') }}");
+    {% else %}
       setPageRole("guest");
+    {% endif %}
 
+    /* ---------- Auto-open modal ONLY for guests ---------- */
+    {% if not session.get('username') %}
       setTimeout(() => {
         modal.classList.add("show");
         modal.setAttribute("aria-hidden", "false");
       }, 5000);
+    {% endif %}
 
-      closeBtn.addEventListener("click", () => {
+    /* ---------- Open modal manually ---------- */
+    if (openLoginBtn) {
+      openLoginBtn.addEventListener("click", () => {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+      });
+    }
+
+    /* ---------- Close modal handlers ---------- */
+    closeBtn.addEventListener("click", () => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
         modal.classList.remove("show");
         modal.setAttribute("aria-hidden", "true");
-      });
+      }
+    });
 
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.remove("show");
-          modal.setAttribute("aria-hidden", "true");
-        }
-      });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("show")) {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+      }
+    });
 
-      async function registerUser(role) {
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
+    /* ---------- Register ---------- */
+    async function registerUser(role) {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-        if (!username || !password) {
-          loginMessage.textContent = "Username and password are required";
-          loginMessage.className = "error";
-          return;
-        }
-
-        const response = await fetch("/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            username,
-            password,
-            role
-          })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          loginMessage.textContent = result.message;
-          loginMessage.className = "success";
-          setPageRole(role);
-          roleSelect.value = role;
-        } else {
-          loginMessage.textContent = result.message;
-          loginMessage.className = "error";
-        }
+      if (!username || !password) {
+        loginMessage.textContent = "Username and password are required";
+        loginMessage.className = "error";
+        return;
       }
 
-      document.querySelectorAll(".register-btn").forEach((button) => {
-        button.addEventListener("click", () => {
-          const role = button.dataset.role;
-          roleSelect.value = role;
-          registerUser(role);
-        });
-      });
-
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const role = roleSelect.value;
-
-        const response = await fetch("/login", {
+      try {
+        const response = await fetch("/register", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            username,
-            password,
-            role
-          })
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ username, password, role }),
         });
 
         const result = await response.json();
@@ -513,12 +650,60 @@
           loginMessage.textContent = result.message;
           loginMessage.className = "success";
           setPageRole(role);
-          modal.classList.remove("show");
+          roleSelect.value = role;
         } else {
           loginMessage.textContent = result.message;
           loginMessage.className = "error";
         }
+      } catch (err) {
+        loginMessage.textContent = "Network error. Try again.";
+        loginMessage.className = "error";
+      }
+    }
+
+    document.querySelectorAll(".register-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const role = btn.dataset.role;
+        roleSelect.value = role;
+        registerUser(role);
       });
-    </script>
-  </body>
+    });
+
+    /* ---------- Login ---------- */
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role     = roleSelect.value;
+
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ username, password, role }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          loginMessage.textContent = result.message || "Login successful";
+          loginMessage.className = "success";
+          setPageRole(role);
+
+          // Redirect to "/" — backend decides role-based destination
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 500);
+        } else {
+          loginMessage.textContent = result.message;
+          loginMessage.className = "error";
+        }
+      } catch (err) {
+        loginMessage.textContent = "Network error. Try again.";
+        loginMessage.className = "error";
+      }
+    });
+  </script>
+</body>
 </html>

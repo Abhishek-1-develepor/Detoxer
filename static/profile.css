@@ -1,0 +1,566 @@
+/* ============================================================
+   DETOXER PROFILE — Lamborghini × Editorial Typography
+   Sharp. Black. Restrained gold. Refined type.
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #000000;
+  --surface: #0A0A0A;
+  --surface-2: #111111;
+  --border: #1C1C1C;
+  --border-strong: #2A2A2A;
+
+  --text: #F5F5F5;
+  --text-2: #C4C4C4;
+  --muted: #737373;
+  --muted-2: #4D4D4D;
+
+  --gold: #C9A84C;
+  --gold-hover: #D9B85C;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv01", "cv11";
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.topbar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 76px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: #000;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.nav-links {
+  display: flex;
+  gap: 34px;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 6px 0;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-links a.active { color: var(--text); }
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -27px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding: 52px 44px;
+  margin: 44px 0 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.profile-hero::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
+  background: var(--gold);
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 500;
+  font-style: italic;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.profile-info { flex: 1; min-width: 0; }
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.profile-info h1 {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  font-variation-settings: "opsz" 100, "SOFT" 0;
+  /* Fraunces looks best with these variations */
+}
+
+.profile-info h1 em {
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 300;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 0;
+  border-top: 1px solid var(--border-strong);
+}
+
+.role-badge::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--gold);
+  color: #000;
+  padding: 16px 28px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background 0.2s ease;
+  border: 1px solid var(--gold);
+  white-space: nowrap;
+}
+
+.btn-primary::after {
+  content: "→";
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--gold-hover);
+  border-color: var(--gold-hover);
+}
+
+.btn-primary:hover::after {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 40px;
+  border: 1px solid var(--border);
+}
+
+.stat-card {
+  padding: 28px 26px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.stat-card:last-child { border-right: none; }
+
+.stat-label {
+  margin: 0 0 18px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: var(--text);
+  font-variation-settings: "opsz" 100;
+  line-height: 1;
+}
+
+.accent-green h2 { color: var(--gold); }
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 28px;
+  margin-bottom: 60px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px 30px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  padding-bottom: 22px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.panel-label {
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.panel-header h3 em {
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 300;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--gold);
+  background: none;
+}
+
+/* ============================================================
+   REVIEWS
+   ============================================================ */
+.review-list { list-style: none; margin: 0; padding: 0; }
+
+.review-item {
+  padding: 26px 0;
+  border-bottom: 1px solid var(--border);
+}
+.review-item:last-child { border-bottom: none; }
+
+.review-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.review-product {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.thumb {
+  width: 52px;
+  height: 52px;
+  background-color: var(--surface-2);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border-strong);
+  flex-shrink: 0;
+}
+
+.review-product strong {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.review-product small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rating-stars {
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.24em;
+}
+
+.review-text {
+  margin: 0 0 12px;
+  color: var(--text-2);
+  font-size: 0.94rem;
+  line-height: 1.75;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+}
+
+.review-date {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   ORDERS
+   ============================================================ */
+.order-list { list-style: none; margin: 0; padding: 0; }
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+.order-item:last-child { border-bottom: none; }
+
+.order-info strong {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.order-info small {
+  display: block;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 0.68rem;
+  margin-top: 4px;
+  letter-spacing: 0.08em;
+}
+
+.order-total {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 26px;
+  margin-top: 14px;
+  border-top: 2px solid var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+
+.order-summary strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-variation-settings: "opsz" 100;
+}
+
+/* ============================================================
+   EMPTY
+   ============================================================ */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.empty p {
+  margin: 0 0 24px;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 14px 28px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold);
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.btn-secondary:hover {
+  background: var(--gold);
+  color: #000;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 980px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-card:nth-child(2) { border-right: none; }
+  .stat-card:nth-child(1),
+  .stat-card:nth-child(2) { border-bottom: 1px solid var(--border); }
+
+  .content-grid { grid-template-columns: 1fr; }
+  .profile-hero { padding: 36px 30px; }
+  .profile-info h1 { font-size: 2.4rem; }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 20px; }
+  .nav-links { gap: 16px; font-size: 0.62rem; letter-spacing: 0.12em; }
+  .brand { font-size: 1.1rem; }
+
+  .profile-hero {
+    padding: 30px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .profile-avatar { width: 80px; height: 80px; font-size: 2rem; }
+  .profile-info h1 { font-size: 1.9rem; }
+
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat-card:last-child { border-bottom: none; }
+
+  .panel { padding: 24px 20px; }
+}

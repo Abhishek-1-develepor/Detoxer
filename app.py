@@ -298,8 +298,14 @@ def delete_product(pid):
 # ============================================================
 # ROUTES — PAGES
 # ============================================================
+
 @app.route("/")
 def home():
+    if session.get("username"):
+        role = session.get("role")
+        if role == "admin":
+            return redirect(url_for("dashboard"))
+        return redirect(url_for("user_products"))
     return render_template("home.html")
 
 
@@ -351,7 +357,53 @@ def user_products():
 @app.route("/orders")
 def orders():
     return render_template("orders.html", orders=session.get("orders", []))
+@app.route("/profile.html")
+def profile():
+    """User profile — shows user info, their reviews, and their orders."""
+    # Agar login nahi hai to home pe bhej do
+    if not session.get("username"):
+        return redirect(url_for("home"))
 
+    user_id  = session.get("user_id")
+    username = session.get("username")
+    role     = session.get("role")
+
+    conn = get_db_connection()
+
+    # User ki saari reviews (with product name)
+    reviews = [dict(r) for r in conn.execute("""
+        SELECT r.*, p.product_name, p.image_url, p.category
+          FROM reviews r
+          JOIN products p ON p.product_id = r.product_id
+         WHERE r.user_id = ?
+         ORDER BY r.created_at DESC
+    """, (user_id,)).fetchall()]
+
+    # Summary stats
+    total_reviews = len(reviews)
+    avg_rating = (
+        round(sum(r["rating"] for r in reviews) / total_reviews, 1)
+        if total_reviews else 0
+    )
+
+    # User ke orders (session-based)
+    orders = session.get("orders", [])
+    total_orders = len(orders)
+    total_spent = sum(o.get("total", 0) for o in orders)
+
+    conn.close()
+
+    return render_template(
+        "profile.html",
+        username=username,
+        role=role,
+        reviews=reviews,
+        total_reviews=total_reviews,
+        avg_rating=avg_rating,
+        orders=orders,
+        total_orders=total_orders,
+        total_spent=total_spent,
+    )
 
 # ============================================================
 # ROUTES — AUTH
